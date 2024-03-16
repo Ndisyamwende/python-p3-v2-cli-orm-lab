@@ -68,28 +68,60 @@ def delete_department():
 # You'll implement the employee functions in the lab
 
 def list_employees():
-    pass
+    """List all employees."""
+    employees = Employee.select()
+    for employee in employees:
+        print(employee)
 
 
 def find_employee_by_name():
-    pass
+    """Find an employee by name."""
+    name = input("Enter the employee's name: ")
+    employee = Employee.get_or_none(Employee.name == name)
+    if employee:
+        print(employee)
+    else:
+        print(f"Employee {name} not found")
 
 
-def find_employee_by_id():
-    pass
+def find_employee_by_id(employee_id):
+    """Find an employee by ID."""
+    employee = Employee.get_or_none(Employee.id == employee_id)
+    return employee
 
 
-def create_employee():
-    pass
+def create_employee(name, position, department_id):
+    """Create a new employee."""
+    employee = Employee.create(name=name, position=position, department_id=department_id)
+    return employee
 
 
-def update_employee():
-    pass
+def update_employee(employee_id, name=None, position=None, department_id=None):
+    """Update an existing employee."""
+    employee = find_employee_by_id(employee_id)
+    if employee:
+        if name:
+            employee.name = name
+        if position:
+            employee.position = position
+        if department_id:
+            employee.department_id = department_id
+        employee.save()
+        return employee
+    else:
+        return None
 
+def delete_employee(employee_id):
+    """Delete an existing employee."""
+    employee = find_employee_by_id(employee_id)
+    if employee:
+        employee.delete_instance()
+        return True
+    else:
+        return False
 
-def delete_employee():
-    pass
-
-
-def list_department_employees():
-    pass
+def list_employees_in_department(department_id):
+    """List all employees in a department."""
+    employees = Employee.select().where(Employee.department_id == department_id)
+    for employee in employees:
+        print(employee)
